@@ -13,7 +13,14 @@ function signup(props) {
     function signUp(e)
     {  
          e.preventDefault();
-         console.log(formData)
+         let {Email,Password,Name,Number} = formData;
+         axios.post("http://localhost:3000/user/signup" , {Name,Password,Email,Number})
+         .then(res=>{
+            alert(res.data.message);
+            props.mode();
+         })
+          .catch(err=>console.log(err));
+          
     }
 
     function handleChange(e)
@@ -23,7 +30,6 @@ function signup(props) {
          ...formData,
           [id]:value
        })
-       console.log(formData[id]);
     }
   return (
     <>

@@ -4,16 +4,29 @@ import React from "react";
 function Login(props) {
 
    const [formData,setformData] = React.useState({
-    // Name:"",
-    // Email:"",
-    Number:"",
+    Email:"",
     Password:""
    })
 
     function login(e)
     {  
          e.preventDefault();
-         console.log(formData)
+         let {Email,Password} = formData;
+         axios.post("http://localhost:3000/user/login" , {Email,Password})
+         .then(res=>{
+          if(res.status === 204)
+           alert("user doesn't exist with email id");
+
+           if(res.data.success)
+           {
+            localStorage.setItem("token",res.data.token);
+             props.loggedin();
+           }
+           else{
+            alert("password incorrect")
+           }
+         })
+          .catch(err=>console.log(err));
     }
 
     function handleChange(e)
@@ -23,7 +36,6 @@ function Login(props) {
          ...formData,
           [id]:value
        })
-       console.log(formData[id]);
     }
   return (
     <>
@@ -31,18 +43,7 @@ function Login(props) {
         <div className="col-4 mx-auto mt-5 " >
 
         <form >
-          {/* <div className="mb-3">
-            <label htmlFor="Name" className="form-label">
-              Name 
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="Name"
-              aria-describedby="emailHelp"
-              value={formData.Name}
-              onChange={handleChange}
-            />
+          <div className="mb-3">
             <label htmlFor="Email" className="form-label">
               Email address
             </label>
@@ -54,20 +55,8 @@ function Login(props) {
               value={formData.Email}
               onChange={handleChange}
             />
-            
-          </div> */}
-          <div className="mb-3">
-            <label htmlFor="Number" className="form-label">
-              Number
-            </label>
-            <input
-              type="number"
-              className="form-control"
-              id="Number"
-              value={formData.Number}
-              onChange={handleChange}
-            />
           </div>
+          
           <div className="mb-3">
             <label htmlFor="Password" className="form-label">
               Password

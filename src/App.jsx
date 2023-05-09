@@ -1,15 +1,34 @@
 
+import React from 'react'
 import './App.css'
-// import Signup from './pages/Signup/signup'
 import Auth from './pages/Auth/Auth'
-function App() {
+import Group from './pages/Chat/Group'
 
+function App() {
+  
+  const [isLoggedIn ,setLoggedIN] = React.useState(false)
+  const auth = localStorage.getItem("token");
+
+  React.useEffect(()=>{
+    if(auth)
+    {
+      setLoggedIN(true)
+    }
+    else{
+      setLoggedIN(false);
+    }
+
+  },[]);
+
+  function loggedin()
+  {
+    setLoggedIN(prev=>!prev);
+  }
   return (
     <>
-      <div className='container'>
-       <Auth  />
+      <div className='main_div'>
+      {isLoggedIn ? <Group token={auth} /> : <Auth loggedin = {loggedin} />} 
       </div>
-      
     </>
   )
 }

@@ -2,7 +2,7 @@
 import React from 'react'
 import Signup from '../Signup/signup'
 import Login from '../Login/Login'
-function Auth() {
+function Auth(props) {
    const [isLogin,setisLogin] = React.useState(true)
    function changeMode()
    {
@@ -10,7 +10,7 @@ function Auth() {
    }
   return (
     <>
-    { isLogin ? <Login mode = {changeMode} /> : <Signup mode={changeMode} />}
+    { isLogin ? <Login loggedin = {props.loggedin} mode = {changeMode} /> : <Signup mode={changeMode} />}
     </>
   )
 }
