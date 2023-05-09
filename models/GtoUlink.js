@@ -1,8 +1,7 @@
-const { INTEGER } = require("sequelize");
 const S = require("sequelize");
 const sequelize = require("../util/database");
 
-const Chats = sequelize.define("Chats",{
+const GtoUlink = sequelize.define("GtoUlink",{
     id:{
         type:S.INTEGER,
         autoIncrement:true,
@@ -12,12 +11,12 @@ const Chats = sequelize.define("Chats",{
     userId:{
         type:S.INTEGER
     },
-    message:{
-        type:S.STRING
-    },
     groupId:{
-        type:INTEGER
+        type:S.INTEGER
+    },
+    groupname:{
+        type:S.STRING
     }
 });
 
-module.exports = Chats;
+module.exports = GtoUlink;

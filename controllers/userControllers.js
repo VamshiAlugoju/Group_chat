@@ -1,5 +1,9 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const linker = require("../models/GtoUlink");
+const Groups = require("../models/Groups");
+const sequelize = require("../util/database");
+
 require("dotenv").config();
 
 const User = require("../models/User")
@@ -59,5 +63,43 @@ exports.Login = async (req,res)=>{
      {
        res.status(400).json(err);
      }
+}
+
+exports.getGroups = async(req,res)=>{
+     
+  try{
+      let user = req.user;
+      let groups = await user.getGroups();
+      res.status(201).json(groups);
+     
+  }catch(err)
+  {
+      res.status(500).json(err);
+  }
+
+}
+
+exports.createGroup = async(req,res)=>{
+    
+  const t =await sequelize.transaction();
+   try{
+         const user = req.user;
+         const {Name} = req.body;
+         if(Name === "")
+         {
+          throw new Error("please enter the name");
+         }
+         console.log(user, typeof(user))
+         const group = await Groups.create({Name,Admin:user.id,});
+        //  await linker.create({userId:user.id,groupId:group.id,groupname:Name},{transaction:t});
+         await user.addGroups(group);
+        //  await t.commit();
+         res.status(200).json(group);
+   }
+   catch(err)
+   {
+    //  await t.rollback();
+     res.status(500).json(err)
+   }
 
 }

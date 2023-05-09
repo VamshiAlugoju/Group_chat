@@ -3,11 +3,16 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 const Authenticate = (req,res,next)=>{
-   
+    
+    
     try{
-        let token  = req.header("Authorization");
-        let user =  jwt.verify(token,process.env.TOKEN)
-        User.findOne({where:{id:user.id}})
+        let token  = req.header("Autorization");
+        console.log(token)
+        let userId =  jwt.verify(token,process.env.TOKEN)
+        if(!userId)
+          throw new Error("something went wrong");
+
+        User.findOne({where:{id:userId}})
         .then(user=>{
             req.user = user;
             next();
@@ -17,6 +22,9 @@ const Authenticate = (req,res,next)=>{
         })
     }
     catch(err){
+        console.log( "thsi is >>>>>>>>>>>" , err);
         res.status(500).json(err);
     }
 }
+
+ module.exports = {Authenticate}
