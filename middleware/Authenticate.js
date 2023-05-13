@@ -7,7 +7,6 @@ const Authenticate = (req,res,next)=>{
     
     try{
         let token  = req.header("Autorization");
-        console.log(token)
         let userId =  jwt.verify(token,process.env.TOKEN)
         if(!userId)
           throw new Error("something went wrong");

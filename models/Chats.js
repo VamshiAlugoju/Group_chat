@@ -9,15 +9,16 @@ const Chats = sequelize.define("Chats",{
         NotNUll:true,
         primaryKey:true
     },
-    userId:{
-        type:S.INTEGER
+    type:{
+        type:S.STRING
+    },
+    image:{
+        type:S.STRING
     },
     message:{
         type:S.STRING
     },
-    groupId:{
-        type:INTEGER
-    }
+    
 });
 
 module.exports = Chats;

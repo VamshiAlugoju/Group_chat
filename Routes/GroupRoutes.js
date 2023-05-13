@@ -6,7 +6,8 @@ router.get("/get_users",groupControllers.get_group_users);
 
 router.post("/add_to_group",groupControllers.add_to_group)
 
-router.get("/:id",groupControllers.getGroupdetails);
+router.delete("/delete_user",groupControllers.delete_user);
 
+router.get("/:id",groupControllers.getGroupdetails);
 
 module.exports = router;

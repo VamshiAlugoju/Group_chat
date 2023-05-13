@@ -9,7 +9,8 @@ exports.getGroupdetails =async (req,res)=>{
     let id = req.params.id;
     let groups =  await Group.findOne({where:{id:id}});
     let users = await groups.getUsers();
-        res.status(200).json(users);
+    let modified_users = {users_arr:users,admin:groups.Admin};
+        res.status(200).json(modified_users);
   }
   catch(err)
   {
@@ -49,4 +50,29 @@ exports.add_to_group = async (req,res)=>{
      res.status(500).json(err);
   }
 
+}
+
+exports.delete_user = async (req,res)=>{
+    
+  let group_id = req.query.group_id;
+  let user_id = req.query.user_id;
+ 
+  try{
+       
+    let group = await Group.findOne({where:{id:group_id}});
+    let user = await User.findOne({where:{id:user_id}});
+    if(user && group)
+    {
+      await group.removeUser(user);
+      res.status(200).json({success:true});
+    }
+    else{
+      throw new Error({ message:"user or group not found",success:false})
+    }
+
+  }
+  catch(err)
+  {
+     res.status(500).json(err);
+  }
 }

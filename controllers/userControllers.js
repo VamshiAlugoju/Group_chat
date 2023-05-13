@@ -54,7 +54,7 @@ exports.Login = async (req,res)=>{
               throw new Error("internal error");
               console.log(result)
             if(result)
-              res.status(201).json({success:true,token:generatetoken(user.id)});
+              res.status(201).json({success:true,user:user,token:generatetoken(user.id)});
             else
               res.status(201).json({success:false})
         })
