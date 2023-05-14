@@ -3,39 +3,14 @@ const Chats = require("../models/Chats");
 const Groups = require("../models/Groups");
 const User = require("../models/User");
 const sequelize = require("../util/database")
-const aws = require("aws-sdk");
+const upload_to_s3 = require("../service/aws")
 
-const upload_to_s3 =(filename,body)=>{
 
-    const s3bucket = new aws.S3({
-        accessKeyId:process.env.ACCESSKEY,
-        secretAccessKey:process.env.SECRETKEY
-    });
-
-    const params = {
-       Bucket:process.env.BUCKETNAME,
-       Key:filename,
-       Body:body,
-       ACL:"public-read"
-    }
-   return new Promise((resolve,reject)=>{
-
-       s3bucket.upload(params,(err,s3response)=>{
-           if(err)
-           {
-               reject(err)
-           }
-           resolve(s3response.Location)
-       })
-   })
-}
 
 let message_to_send;
 
 exports.PostMessage = async (req,res)=>{
 
-    console.log(req.body);
-    console.log(req.file);
   
     try{
         const Id = req.user.id;
@@ -46,7 +21,7 @@ exports.PostMessage = async (req,res)=>{
         let msg;
         if(req.file)
         {
-            const link = await upload_to_s3( req.file.originalname, req.file.buffer)
+            const link = await  upload_to_s3( req.file.originalname, req.file.buffer)
             
             msg = await Chats.create({UserId:Id , type:"file",GroupId:id,image:link})
              

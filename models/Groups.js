@@ -13,6 +13,9 @@ const Groups = sequelize.define("Groups",{
     },
     Admin:{
         type:S.INTEGER
+    },
+    image:{
+        type:S.STRING
     }
    });
 

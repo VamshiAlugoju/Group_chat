@@ -10,6 +10,7 @@ const ChatRoutes = require("./Routes/Chats");
 const groupRoutes = require("./Routes/GroupRoutes");
 const ChatControllers = require("./controllers/ChatControllers")
 const chatsocket = ChatControllers.chatsocket;
+
 require("dotenv").config();
 
 const app = express();
@@ -25,6 +26,8 @@ const User = require("./models/User");
 const Groups = require("./models/Groups");
 const Chat = require("./models/Chats");
 const Chats = require("./models/Chats");
+const Admin = require("./models/userGroups");
+const userGroups = require("./models/userGroups")
 
 app.use(bodyParser.json());
 
@@ -37,13 +40,11 @@ app.get("/",(req,res)=>{
     res.json("hello")
 })
 
- 
-
  chatsocket(io);
 
 
-Groups.belongsToMany(User,{through:"userGroups"});
-User.belongsToMany(Groups,{through:"userGroups"});
+Groups.belongsToMany(User,{through:userGroups});
+User.belongsToMany(Groups,{through:userGroups});
 Chats.belongsTo(Groups);
 Chats.belongsTo(User);
 

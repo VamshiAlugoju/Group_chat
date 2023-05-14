@@ -10,4 +10,6 @@ router.delete("/delete_user",groupControllers.delete_user);
 
 router.get("/:id",groupControllers.getGroupdetails);
 
+router.post("/makeAdmin",groupControllers.makeAdmin)
+
 module.exports = router;

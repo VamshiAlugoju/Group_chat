@@ -3,13 +3,19 @@ const Group = require("../models/Groups");
 const link = require("../models/GtoUlink");
 const User = require("../models/User");
 const Sequelize = require("sequelize");
- 
+const userGroups = require("../models/userGroups");
+const sequelize = require("../util/database");
+
+
 exports.getGroupdetails =async (req,res)=>{
   try{ 
     let id = req.params.id;
+   
     let groups =  await Group.findOne({where:{id:id}});
-    let users = await groups.getUsers();
-    let modified_users = {users_arr:users,admin:groups.Admin};
+
+    let data = await sequelize.query(`SELECT Name,isadmin,UserId FROM userGroups JOIN Users ON userGroups.UserId = Users.id WHERE userGroups.GroupId = ${id}`)
+    
+    let modified_users = {users_arr:data,admin:groups.Admin};
         res.status(200).json(modified_users);
   }
   catch(err)
@@ -20,7 +26,6 @@ exports.getGroupdetails =async (req,res)=>{
 
 exports.get_group_users =async (req,res)=>{
    
- 
   try{
      
     const users = await User.findAll();
@@ -74,5 +79,23 @@ exports.delete_user = async (req,res)=>{
   catch(err)
   {
      res.status(500).json(err);
+  }
+}
+
+exports.makeAdmin = async(req,res)=>{
+  try{
+     const {UserId,GroupId} = req.body
+     if(UserId === "" || GroupId ==="")
+     {
+      throw new Error("invalid details");
+     }
+    
+      await userGroups.update({isadmin:true},{where:{GroupId,UserId}});
+      res.status(200).json({success:true})
+
+  }
+  catch(err)
+  {
+    res.status(500).json(err);
   }
 }
