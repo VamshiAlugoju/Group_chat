@@ -14,3 +14,13 @@
     height: 2rem;
     width: 2rem;
 }
+
+
+.add_user_name_modal{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-transform: capitalize;
+    padding: 10px 10px 10px 10px;
+
+}

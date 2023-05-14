@@ -93,14 +93,16 @@
   
   .user_main{
      width: 100%;
-     height: 3rem;;
-     display: flex;
-     justify-content: space-between;
+     height: fit-content;;
      align-items: flex-end;
      border: 1px solid #00800030;
      border-radius: 5px;
      padding: 5px;
      margin-bottom: 0.4rem;
+  }
+  .user_top_row{
+    display: flex;
+     justify-content: space-between;
   }
   .users_div{
     width: 100%;
@@ -124,15 +126,40 @@
   .user_name{
     display: flex;
     /* align-items: center; */
+    height: fit-content;
   }
  .user_name p{
    font-size: medium;
    font-weight: 900;
    display: flex;
+   height: fit-content;
    align-items: center;
+   margin-bottom: 5px;
  }
  .admin_div{
     color: #5900ff;
     font-size: 12px;
     font-weight: 700;
+    height: 100%;
+    display: flex;
+    align-items: flex-start;
+ }
+
+ .delete_btn{
+  border: none;
+  background-color: none;;
+
+ }
+
+ .make_admin{
+  /* display: block; */
+ }
+ .make_admin button{
+     background-color: none;
+     border: 1px solid rgba(128, 128, 128, 0.082);
+     border-radius: 10px;
+     font-size: 10px;
+     padding: 6px;
+     color: #114714;
+     font-weight: 700;
  }

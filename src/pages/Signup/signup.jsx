@@ -1,5 +1,6 @@
 
 import React from "react";
+import "../Auth/auth.css"
 
 function signup(props) {
 
@@ -34,9 +35,9 @@ function signup(props) {
   return (
     <>
       <div className="row">
-        <div className="col-4 mx-auto mt-5 " >
+         
 
-        <form >
+        <form className="login_form_div" >
           <div className="mb-3">
             <label htmlFor="Name" className="form-label">
               Name 
@@ -88,15 +89,15 @@ function signup(props) {
           </div>
            <div className="text-center">
             
-          <button  onClick={signUp} className="btn btn-primary text-center">
+          <button  onClick={signUp} className="auth_btn text-center">
             Submit
           </button>
            </div>
         </form>
         <div className="text-center mt-2">
-            <p>Already have an account  <button onClick={props.mode} className="btn btn-sm btn-dark">Login</button></p>
+            <p>Already have an account  <button onClick={props.mode} className="auth_btn">Login</button></p>
         </div>
-        </div>
+        
       </div>
     </>
   );

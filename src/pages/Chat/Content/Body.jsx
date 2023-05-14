@@ -1,84 +1,128 @@
 import React, { Component, useState, useEffect } from "react";
+import io from "socket.io-client";
 
 import "./bodyd.css";
 import Avatar from "../Groups/Avatar";
 import ChatItem from "./ChatItem";
+let socket;
+
 
 export default function ChatContent(props) {
- const messagesEndRef = React.useRef(null) 
- const [msg,setmsg] = React.useState("");
- const [messages , setmessages] = React.useState([]);
- const [clicked,setclicked] = React.useState(true)
-    
-    React.useEffect(()=>{
-      let GId = props.id.Id;
-      
-      axios.get(`http://localhost:3000/chats/${GId}`,{headers:{Autorization:props.token}})
-      .then(res=>{
-          setmessages(res.data)                 
+
+  const messagesEndRef = React.useRef(null) 
+  const [msg,setmsg] = React.useState("");
+  const [messages , setmessages] = React.useState([]);
+  const [clicked,setclicked] = React.useState(true)
+  const user = JSON.parse( localStorage.getItem("user"));
+  const fileref = React.useRef(null)
+  const [file,setfile] = React.useState(null);
+
+  React.useEffect(()=>{
+      socket = io.connect("http://localhost:3000");
+      socket.emit("setup",user)
+      socket.on("connected",()=>{
+          console.log("connected");
       })
-      .catch(err=>console.log(err));
-      
-    },[props.id,clicked])
+  
+  },[])
+    
+   React.useEffect(()=>{
+     socket.on("recieve",(msg)=>{
+      setmessages([...messages,msg]);
+      scrollToBottom();
+     })
+   })
+
+
+  function change()
+  {
+    let GId = props.id.Id;
+    socket.emit("join",GId);
+    axios.get(`http://localhost:3000/chats/${GId}`,{headers:{Autorization:props.token}})
+    .then(res=>{
+        setmessages(res.data) 
+        scrollToBottom()               
+    })
+    .catch(err=>console.log(err));
+  }
+ 
+    React.useEffect(()=>{
+      change()
+    },[props.id.Id])
    
-    function sendMsg()
-    { 
+    function sendMsg(e)
+    {  
+      console.log("send message clicked")
+      e.preventDefault();
       let GId = props.id.Id;
-       axios.post(`http://localhost:3000/chats/${GId}`, {Msg:msg}, {headers:{Autorization:props.token}})
+      let formdata = new FormData();
+      
+       if(file) formdata.append("file",file);
+       else formdata.append("Msg",msg)
+
+
+      console.log("rasengan rsngan rasengana")
+       axios.post(`http://localhost:3000/chats/${GId}`,formdata, {headers:{Autorization:props.token}})
        .then(res=>{
-        setclicked(v=>!v);
-        scrollToBottom();
+        socket.emit('sent',res.data, GId);
+        console.log(res.data)
+        setfile(null);
+        setmsg("")
        })
-       .catch(err=>console.log(err));
+       .catch(err=>{
+         console.log(err);
+         setfile(null);
+       } )
+      
     }
   
 
   const scrollToBottom = () => {
+    
      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
-  // componentDidMount() {
-  //   window.addEventListener("keydown", (e) => {
-  //     if (e.keyCode == 13) {
-  //       if (this.state.msg != "") {
-  //         this.chatItms.push({
-  //           key: 1,
-  //           type: "",
-  //           msg: this.state.msg,
-  //           image:
-  //             "https://pbs.twimg.com/profile_images/1116431270697766912/-NfnQHvh_400x400.jpg",
-  //         });
-  //         this.setState({ chat: [...this.chatItms] });
-  //         this.scrollToBottom();
-  //         this.setState({ msg: "" });
-  //       }
-  //     }
-  //   });
-  //   this.scrollToBottom();
-  // }
+  function selectfile(e)
+  {  
+    console.log("send file clicked")
+    fileref.current.click();
+  }
+
+  function handlefile(e)
+  {
+     setfile(e.target.files[0]);
+  }
+     
 
   const  handleChange = (e) => {
      setmsg(e.target.value );
   };
-
-  
+    
+    if(!props.id.Id)
+      return (
+        <div className="main__chatcontent ">
+          <h5>select a group </h5>
+        </div>
+      )
     return (
+      
       <div className="main__chatcontent">
+         <div>
         <div className="content__header">
           <div className="blocks">
             <div className="current-Group">
               <Avatar
                 isOnline="active"
-                image="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU"
+                image={props.id.image}
               />
               <p>{props.id.name}</p>
             </div>
           </div>
 
           <div className="blocks">
-            <div className="settings">
-              <button className="btn-nobg">
-                <i className="fa fa-cog"></i>
+            <div className="logout">
+              <button onClick={props.logout} className="">
+                Logout <i className="fa-sharp fa-solid fa-arrow-up-left-from-circle" style={{color: "#6c1fe0"}}></i>
               </button>
             </div>
           </div>
@@ -86,24 +130,38 @@ export default function ChatContent(props) {
         <div className="content__body">
           <div className="chat__items">
             { messages.map((item, index) => {
+      
               return (
                 <ChatItem
                   animationDelay={index + 2}
                   key={item.id}
-                  user={item.type}
+                  user={user.id === item.UserId ? "me":"other"}
                   msg={item.message}
-                  // image={item.image}
+                  image={item.image}
+                  type={item.type}
+                  name={item.User}
                 />
               );
             })}
-            <div ref={messagesEndRef} />
+            <div style={{height:"3px"}}  ref={messagesEndRef} ></div>
           </div>
         </div>
+        </div>
+
         <div className="content__footer">
           <div className="sendNewMessage">
-            <button className="addFiles">
+  
+            <button onClick={selectfile} className="addFiles">
               <i className="fa fa-plus"></i>
             </button>
+          
+            <input 
+            type="file" 
+            onChange={handlefile}
+            ref={fileref}
+            style={{display:"none"}}
+            name="file_name"
+             />
             <input
               type="text"
               placeholder="Type a message here"
@@ -113,8 +171,13 @@ export default function ChatContent(props) {
             <button onClick={sendMsg} className="btnSendMsg" id="sendMsgBtn">
               <i className="fa fa-paper-plane"></i>
             </button>
+
+
+         
+            
           </div>
         </div>
+
       </div>
     );
   }

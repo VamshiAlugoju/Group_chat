@@ -15,7 +15,7 @@ function GroupItems(props) {
       }
       e.currentTarget.classList.add("active");
        
-      props.changegroup(props.id , props.name);
+      props.changegroup(props.id , props.name,props.image);
     };
 
   return (

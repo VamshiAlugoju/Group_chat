@@ -1,0 +1,23 @@
+.login_form_div{
+    width: 18rem;
+}
+
+.row{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth_btn{
+    background-color: #4664ff;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.02);
+    height: 2.5rem;
+    width: fit-content;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: white;
+}

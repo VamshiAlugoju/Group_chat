@@ -13,7 +13,7 @@ function Groups(props) {
     
   }
 
-  const image = "https://pbs.twimg.com/profile_images/1055263632861343745/vIqzOHXj.jpg";
+   
   const [Grouparr,setGrouparr] = React.useState([]);
   let token = localStorage.getItem("token");
 
@@ -51,7 +51,7 @@ function Groups(props) {
             animationDelay={index + 1}
             // active={item.active ? "active" : ""}
             id={item.id}
-            image={image}
+            image={item.image}
           /> 
         );
       })}

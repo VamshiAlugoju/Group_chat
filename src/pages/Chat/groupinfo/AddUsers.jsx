@@ -24,7 +24,7 @@ function addUsers(props) {
     
     axios.get(`http://localhost:3000/groups/get_users`)
     .then(res=>{
-      console.log(res.data);
+     
       setusers(res.data);
     })
     .catch(err=>console.log("err"));
@@ -32,6 +32,7 @@ function addUsers(props) {
   },[])
 
   function closeModal() {
+    props.clicked();
     props.toggleisOpen();
   }
 
@@ -55,7 +56,7 @@ function addUsers(props) {
         style={customStyles}
         contentLabel="Example Modal"
       >
-        <div className="main_div ">
+        <div className="main_div_modal ">
 
           <div className=" heading_div  ">
             <div className=" heading">
@@ -65,10 +66,10 @@ function addUsers(props) {
               </button>
             </div>
           </div>
-          <div className="users_div">
+          <div className="users_div_modal">
             {users.map(item=>{
               return(
-                <AdduserItem groupId={props.id} name={item.Name} id={item.id} />
+                <AdduserItem key={item.id} groupId={props.id} name={item.Name} id={item.id} />
               )
             })}
           </div>

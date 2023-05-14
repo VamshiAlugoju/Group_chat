@@ -6,30 +6,40 @@ import AddUsers from "./AddUsers";
 
 export default function GroupInfo (props) {
    
-  const[openmodal,setopenmodal] = React.useState(false);
+  const user = JSON.parse( localStorage.getItem("user"))
 
+  const[openmodal,setopenmodal] = React.useState(false);
+  const[clicked , setclicked] = React.useState(false);
+  function toggleclicked()
+  {
+    console.log("ello")
+    setclicked(prev=>!prev);
+  }
    function toggleisOpen()
-   {    
-       console.log("hello")
+   {      setclicked(prev=>!prev);
        setopenmodal(prev=>!prev);
    }
 
   let [users,setusers] = React.useState([]);
-
+  let [admin,setadmin] = React.useState(false);
   React.useEffect(()=>{
     axios.get(`http://localhost:3000/groups/${props.id.Id}`)
     .then(res=>{
-        setusers(res.data);
-         
+      console.log(res.data.users_arr[0])
+        setusers(res.data.users_arr[0]);
+        setadmin(res.data.admin)
+        
     })
     .catch(err=>console.log(err));
-  },[props.id.Id])
+  },[props.id.Id ,clicked])
+    
+  if(!user) return;
    
     return (
       <div className="main__userprofile">
         <div className="profile__card user__profile__image">
           <div className="profile__image">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU" />
+            <img src={props.id.image} />
           </div>
           <h4 className="mt-2">{props.id.name}</h4>
         </div>
@@ -37,22 +47,29 @@ export default function GroupInfo (props) {
           <div className="users_div">
             <div className="user_and_btn">
               <h5>Users</h5>
-               <button onClick={toggleisOpen} >
+              {admin === user.id ? <button onClick={toggleisOpen} >
                 <i className="fa-regular fa-plus fa-rotate-90" style={{color: "#4f26c0"}}></i>
-                </button>
+                </button> :" " }
+               
             </div>
           </div>
            {users.map(item=>{
-             
+              
             return(
 
               <UserItem 
                name={item.Name}
+               admin = {item.isadmin}
+               Admin={admin}
+               id={item.UserId}
+               key={item.UserId}
+               group_id={props.id.Id}
+               clicked={toggleclicked}
                />
             )
            })}
         </div>
-        <AddUsers id={props.id.Id} toggleisOpen={toggleisOpen} isOpen={openmodal} />
+        <AddUsers clicked={toggleclicked} id={props.id.Id} toggleisOpen={toggleisOpen} isOpen={openmodal} />
       </div>
     );
   

@@ -1,6 +1,6 @@
 
 import React from "react";
-
+import "../Auth/auth.css"
 function Login(props) {
 
    const [formData,setformData] = React.useState({
@@ -20,6 +20,7 @@ function Login(props) {
            if(res.data.success)
            {
             localStorage.setItem("token",res.data.token);
+            localStorage.setItem("user",JSON.stringify(res.data.user))
              props.loggedin();
            }
            else{
@@ -40,9 +41,9 @@ function Login(props) {
   return (
     <>
       <div className="row">
-        <div className="col-4 mx-auto mt-5 " >
+        
 
-        <form >
+        <form className="login_form_div" >
           <div className="mb-3">
             <label htmlFor="Email" className="form-label">
               Email address
@@ -71,15 +72,15 @@ function Login(props) {
           </div>
            <div className="text-center">
             
-          <button  onClick={login} className="btn btn-primary text-center">
+          <button  onClick={login} className="auth_btn text-center">
             Login
           </button>
            </div>
            <div className="text-center mt-2">
-            <p>create an account <button onClick={props.mode} className="btn btn-sm btn-dark">Signup</button></p>
+            <p>create an account <button onClick={props.mode} className="auth_btn">Signup</button></p>
         </div>
         </form>
-        </div>
+       
       </div>
     </>
   );

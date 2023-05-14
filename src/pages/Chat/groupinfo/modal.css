@@ -30,11 +30,11 @@
     font-weight: 700;
     color: #7131a6d9;
  }
-.main_div{
+.main_div_modal{
     min-height: 10rem;
     display: block;
 }  
 
-.users_div{
+.users_div_modal{
     display: block;
 }
